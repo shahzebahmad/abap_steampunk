@@ -1,0 +1,57 @@
+unmanaged ;
+define behavior for ZUM_I_TRAVEL alias Travel
+implementation in class zbp_um_i_travel unique
+lock master
+etag master LastChangedAt
+{
+  create;
+  update;
+  delete;
+  association _Booking { create; }
+
+  field ( read only  ) TravelId;
+  field ( mandatory ) AgencyID, CustomerID, BeginDate, EndDate;
+
+  mapping for /DMO/Travel control ZUM_S_Travel
+  {
+    TravelId        = travel_id;
+    AgencyId        = agency_id;
+    CustomerId      = customer_id;
+    BeginDate       = begin_date;
+    BookingFee      = booking_fee;
+    CreatedAt       = createdat;
+    CreatedBy       = createdby;
+    CurrencyCode    = currency_code;
+    Description     = description;
+    EndDate         = end_date;
+    LastChangedAt   = lastchangedat;
+    LastChangedBy   = lastchangedby;
+    Status          = status;
+    TotalPrice      = total_price;
+  }
+}
+
+define behavior for ZUM_I_BOOKING alias Booking
+implementation in class zbp_um_i_booking unique
+lock dependent by _Travel
+etag dependent by _Travel
+{
+  update;
+  delete;
+  field ( read only  ) TravelId, BookingId;
+  field ( mandatory ) BookingDate, CustomerId, CarrierId, ConnectionId, FlightDate;
+  association _Travel;
+
+  mapping for /DMO/BOOKING control ZUM_S_BOOKING
+  {
+    BookingDate     = booking_date;
+    BookingId       = booking_id;
+    CarrierId       = carrier_id;
+    ConnectionId    = connection_id;
+    CurrencyCode    = currency_code;
+    CustomerId      = customer_id;
+    FlightDate      = flight_date;
+    FlightPrice     = flight_price;
+    TravelId        = travel_id;
+  }
+}
